@@ -42,16 +42,16 @@ export const MonteCarloChart: React.FC<MonteCarloChartProps> = ({
   // Let's verify Recharts Area range support. Yes `dataKey` can be `[min, max]`.
   
   return (
-    <div className="w-full h-[500px] p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Retirement Corpus Projection</h3>
-        <p className="text-sm text-slate-500">
+    <div className="w-full h-[350px] sm:h-[420px] md:h-[500px] p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="mb-2 sm:mb-4">
+        <h3 className="text-sm sm:text-base md:text-lg font-semibold">Retirement Corpus Projection</h3>
+        <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">
           Showing 10th-90th percentile range and median trajectory.
         </p>
       </div>
       
-      <ResponsiveContainer width="100%" height="90%">
-        <ComposedChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+      <ResponsiveContainer width="100%" height="92%">
+        <ComposedChart data={data} margin={{ top: 5, right: 10, left: -15, bottom: 0 }}>
           <defs>
             <linearGradient id="colorRange" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.4} />
@@ -60,21 +60,45 @@ export const MonteCarloChart: React.FC<MonteCarloChartProps> = ({
           </defs>
           <XAxis 
             dataKey="year" 
-            label={{ value: 'Years', position: 'insideBottomRight', offset: -10 }} 
             tickLine={false}
             axisLine={false}
+            tick={{ fontSize: 10 }}
+            interval="preserveStartEnd"
           />
           <YAxis 
             tickFormatter={toCr} 
             tickLine={false}
             axisLine={false}
+            tick={{ fontSize: 10 }}
+            width={45}
           />
           <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
           
           <Tooltip
-            formatter={(value: number | undefined) => value !== undefined ? [toCrDetail(value), "Corpus"] : ["", "Corpus"]}
-            labelFormatter={(label) => `Year ${label}`}
-            contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+            content={({ active, payload, label }) => {
+              if (!active || !payload || !payload.length) return null;
+              
+              // Find the data point from payload
+              const dataPoint = payload[0]?.payload;
+              if (!dataPoint) return null;
+              
+              return (
+                <div className="bg-white dark:bg-slate-800 p-3 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+                  <p className="font-semibold text-slate-900 dark:text-white mb-2">Year {label}</p>
+                  <div className="space-y-1 text-sm">
+                    <p className="text-slate-600 dark:text-slate-300">
+                      <span className="font-medium">Median:</span> {toCrDetail(dataPoint.p50)}
+                    </p>
+                    <p className="text-slate-500 dark:text-slate-400">
+                      <span className="font-medium">10th %ile:</span> {toCrDetail(dataPoint.p10)}
+                    </p>
+                    <p className="text-slate-500 dark:text-slate-400">
+                      <span className="font-medium">90th %ile:</span> {toCrDetail(dataPoint.p90)}
+                    </p>
+                  </div>
+                </div>
+              );
+            }}
           />
 
           {/* range p10 to p90 */}

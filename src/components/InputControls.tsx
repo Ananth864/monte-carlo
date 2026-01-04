@@ -38,7 +38,7 @@ export const InputControls: React.FC<InputControlsProps> = ({
   const discLakh = params.discretionarySpend / 1e5;
 
   return (
-    <div className="space-y-8 p-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 h-full overflow-y-auto max-h-[calc(100vh-4rem)]">
+    <div className="space-y-8 p-4 sm:p-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
       <div>
         <h2 className="text-lg font-semibold tracking-tight mb-4">
           Parameters

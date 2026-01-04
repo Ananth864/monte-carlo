@@ -46,9 +46,12 @@ export const MonteCarloDashboard: React.FC = () => {
   }, [params]);
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 dark:selection:bg-indigo-900">
+    <div 
+      className="h-[calc(100vh-3.5rem)] overflow-y-auto bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 dark:selection:bg-indigo-900 touch-scroll mobile-scroll-clean"
+      style={{ WebkitOverflowScrolling: 'touch' }}
+    >
       
-      <main className="max-w-[1600px] mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <main className="max-w-[1600px] mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
         
         {/* Left Sidebar: Inputs */}
         <aside className="lg:col-span-4 xl:col-span-3">
@@ -87,9 +90,9 @@ export const MonteCarloDashboard: React.FC = () => {
 };
 
 const StatCard = ({ label, value, subtext, highlight = false }: { label: string, value: string, subtext?: string, highlight?: boolean }) => (
-    <div className={`p-6 bg-white dark:bg-slate-900 rounded-xl border ${highlight ? 'border-red-500/50 bg-red-50/10' : 'border-slate-200 dark:border-slate-800'} shadow-sm`}>
-        <p className="text-sm font-medium text-slate-500 mb-1">{label}</p>
-        <p className={`text-3xl font-bold ${highlight ? 'text-red-600' : 'text-slate-900 dark:text-white'}`}>{value}</p>
-        {subtext && <p className="text-xs text-slate-400 mt-2">{subtext}</p>}
+    <div className={`p-4 sm:p-6 bg-white dark:bg-slate-900 rounded-xl border ${highlight ? 'border-red-500/50 bg-red-50/10' : 'border-slate-200 dark:border-slate-800'} shadow-sm`}>
+        <p className="text-xs sm:text-sm font-medium text-slate-500 mb-1">{label}</p>
+        <p className={`text-xl sm:text-2xl md:text-3xl font-bold ${highlight ? 'text-red-600' : 'text-slate-900 dark:text-white'}`}>{value}</p>
+        {subtext && <p className="text-xs text-slate-400 mt-1 sm:mt-2">{subtext}</p>}
     </div>
 );
