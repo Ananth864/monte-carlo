@@ -51,7 +51,7 @@ export const MonteCarloChart: React.FC<MonteCarloChartProps> = ({
       </div>
       
       <ResponsiveContainer width="100%" height="92%">
-        <ComposedChart data={data} margin={{ top: 5, right: 10, left: -15, bottom: 0 }}>
+        <ComposedChart data={data} margin={{ top: 5, right: 10, left: -5, bottom: 0 }}>
           <defs>
             <linearGradient id="colorRange" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.4} />
@@ -69,8 +69,8 @@ export const MonteCarloChart: React.FC<MonteCarloChartProps> = ({
             tickFormatter={toCr} 
             tickLine={false}
             axisLine={false}
-            tick={{ fontSize: 10 }}
-            width={45}
+            tick={{ fontSize: 9 }}
+            width={50}
           />
           <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
           

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { InputControls } from "./InputControls";
 import { MonteCarloChart } from "./MonteCarloChart";
 import { runMonteCarlo, type SimulationParams, type YearResult } from "@/lib/monteCarlo";
@@ -29,20 +29,33 @@ const DEFAULT_PARAMS: SimulationParams = {
 export const MonteCarloDashboard: React.FC = () => {
   const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
   const [data, setData] = useState<YearResult[]>([]);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleParamChange = (newParams: SimulationParams) => {
     setParams(newParams);
   };
 
-
   useEffect(() => {
-    // Run simulation
-    // Use standard setTimeout to avoid blocking main thread on initial render if heavy
-    const timer = setTimeout(() => {
+    // Debounce simulation - wait 300ms after last param change before running
+    // This allows sliders to feel smooth while avoiding excessive computation
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    
+    setIsSimulating(true);
+    
+    debounceRef.current = setTimeout(() => {
       const results = runMonteCarlo(params);
       setData(results);
-    }, 0);
-    return () => clearTimeout(timer);
+      setIsSimulating(false);
+    }, 300);
+    
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
   }, [params]);
 
   return (
@@ -51,7 +64,7 @@ export const MonteCarloDashboard: React.FC = () => {
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
       
-      <main className="max-w-[1600px] mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
+      <main className="max-w-[1600px] mx-auto p-4 sm:p-6 pb-20 sm:pb-6 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
         
         {/* Left Sidebar: Inputs */}
         <aside className="lg:col-span-4 xl:col-span-3">
@@ -63,7 +76,9 @@ export const MonteCarloDashboard: React.FC = () => {
 
         {/* Main Content: Chart & Stats */}
         <div className="lg:col-span-8 xl:col-span-9 space-y-6">
-          <MonteCarloChart data={data} startCorpus={params.startCorpus} />
+          <div className={`transition-opacity duration-200 ${isSimulating ? 'opacity-60' : 'opacity-100'}`}>
+            <MonteCarloChart data={data} startCorpus={params.startCorpus} />
+          </div>
           
           {/* Key Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
