@@ -5,7 +5,7 @@ import { GKWithdrawalCalculator } from "@/components/GKWithdrawalCalculator";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/monte-carlo">
       <Routes>
         <Route element={<AppLayout />}>
           {/* Main simulation page */}
