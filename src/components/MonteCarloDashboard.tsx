@@ -66,8 +66,8 @@ export const MonteCarloDashboard: React.FC = () => {
       
       <main className="max-w-[1600px] mx-auto p-4 sm:p-6 pb-20 sm:pb-6 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
         
-        {/* Left Sidebar: Inputs */}
-        <aside className="lg:col-span-4 xl:col-span-3">
+        {/* Left Sidebar: Inputs - Independent scroll on desktop */}
+        <aside className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-[3.5rem] lg:h-[calc(100vh-3.5rem)] lg:overflow-y-auto touch-scroll mobile-scroll-clean">
           <InputControls 
             params={params} 
             onChange={handleParamChange} 
@@ -75,26 +75,25 @@ export const MonteCarloDashboard: React.FC = () => {
         </aside>
 
         {/* Main Content: Chart & Stats */}
-        <div className="lg:col-span-8 xl:col-span-9 space-y-6">
+        <div className="lg:col-span-8 xl:col-span-9 space-y-4 sm:space-y-6">
           <div className={`transition-opacity duration-200 ${isSimulating ? 'opacity-60' : 'opacity-100'}`}>
             <MonteCarloChart data={data} startCorpus={params.startCorpus} />
           </div>
           
-          {/* Key Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Key Stats Cards - Compact */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
              <StatCard 
-                label={`Median End Corpus (Yr ${params.years})`}
-                value={`₹${(data[data.length-1]?.p50 / 1e7 || 0).toFixed(1)} Cr`} 
+                label="Median (Today's ₹)"
+                value={`₹${(presentValue(data[data.length-1]?.p50, params.inflation, params.years) / 1e7 || 0).toFixed(1)} Cr`} 
              />
              <StatCard 
-                label={`Worst Case (10th %ile) (Yr ${params.years})`}
+                label="Worst Case (10th)"
                 value={`₹${(data[data.length-1]?.p10 / 1e7 || 0).toFixed(1)} Cr`} 
                 highlight={data[data.length-1]?.p10 < 0}
              />
              <StatCard 
-                label="Success Probability" 
-                value={`${(data[data.length-1]?.successRate || 0).toFixed(1)}%`}
-                subtext="Simulations with >0 corpus"
+                label="Success Rate" 
+                value={`${(data[data.length-1]?.successRate || 0).toFixed(0)}%`}
              />
           </div>
         </div>
@@ -104,10 +103,15 @@ export const MonteCarloDashboard: React.FC = () => {
   );
 };
 
-const StatCard = ({ label, value, subtext, highlight = false }: { label: string, value: string, subtext?: string, highlight?: boolean }) => (
-    <div className={`p-4 sm:p-6 bg-white dark:bg-slate-900 rounded-xl border ${highlight ? 'border-red-500/50 bg-red-50/10' : 'border-slate-200 dark:border-slate-800'} shadow-sm`}>
-        <p className="text-xs sm:text-sm font-medium text-slate-500 mb-1">{label}</p>
-        <p className={`text-xl sm:text-2xl md:text-3xl font-bold ${highlight ? 'text-red-600' : 'text-slate-900 dark:text-white'}`}>{value}</p>
-        {subtext && <p className="text-xs text-slate-400 mt-1 sm:mt-2">{subtext}</p>}
+// Calculate present value by discounting future value by cumulative inflation
+const presentValue = (futureValue: number, inflationRate: number, years: number): number => {
+  if (!futureValue || !years) return 0;
+  return futureValue / Math.pow(1 + inflationRate, years);
+};
+
+const StatCard = ({ label, value, highlight = false }: { label: string, value: string, highlight?: boolean }) => (
+    <div className={`p-2 sm:p-4 bg-white dark:bg-slate-900 rounded-lg sm:rounded-xl border ${highlight ? 'border-red-500/50 bg-red-50/10' : 'border-slate-200 dark:border-slate-800'} shadow-sm`}>
+        <p className="text-[10px] sm:text-xs font-medium text-slate-500 mb-0.5 sm:mb-1 truncate">{label}</p>
+        <p className={`text-sm sm:text-xl md:text-2xl font-bold ${highlight ? 'text-red-600' : 'text-slate-900 dark:text-white'}`}>{value}</p>
     </div>
 );

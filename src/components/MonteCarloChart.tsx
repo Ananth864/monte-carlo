@@ -71,6 +71,9 @@ export const MonteCarloChart: React.FC<MonteCarloChartProps> = ({
             axisLine={false}
             tick={{ fontSize: 9 }}
             width={50}
+            domain={[0, 500 * 1e7]}
+            ticks={[0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500].map(v => v * 1e7)}
+            allowDataOverflow={true}
           />
           <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
           

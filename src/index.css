@@ -127,6 +127,24 @@
     @apply font-sans;
   }
 
+  /* Global Aesthetic Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 dark:bg-slate-800 rounded-full transition-colors;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-300 dark:bg-slate-700;
+  }
+
   /* Improved touch scrolling for mobile */
   .touch-scroll {
     -webkit-overflow-scrolling: touch;
