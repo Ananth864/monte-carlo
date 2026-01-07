@@ -76,6 +76,15 @@ export const MonteCarloDashboard: React.FC = () => {
 
         {/* Main Content: Chart & Stats */}
         <div className="lg:col-span-8 xl:col-span-9 space-y-4 sm:space-y-6">
+          {/* Simulating indicator */}
+          <div className={`transition-all duration-300 h-6 ${isSimulating ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+             <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 rounded-full">
+                <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300 tracking-tight uppercase">Simulating...</span>
+             </div>
+          </div>
+
+
           <div className={`transition-opacity duration-200 ${isSimulating ? 'opacity-60' : 'opacity-100'}`}>
             <MonteCarloChart data={data} startCorpus={params.startCorpus} />
           </div>
@@ -87,8 +96,8 @@ export const MonteCarloDashboard: React.FC = () => {
                 value={`₹${(presentValue(data[data.length-1]?.p50, params.inflation, params.years) / 1e7 || 0).toFixed(1)} Cr`} 
              />
              <StatCard 
-                label="Worst Case (10th)"
-                value={`₹${(data[data.length-1]?.p10 / 1e7 || 0).toFixed(1)} Cr`} 
+                label="Worst Case (Today's ₹)"
+                value={`₹${(presentValue(data[data.length-1]?.p10, params.inflation, params.years) / 1e7 || 0).toFixed(1)} Cr`} 
                 highlight={data[data.length-1]?.p10 < 0}
              />
              <StatCard 
@@ -104,8 +113,8 @@ export const MonteCarloDashboard: React.FC = () => {
 };
 
 // Calculate present value by discounting future value by cumulative inflation
-const presentValue = (futureValue: number, inflationRate: number, years: number): number => {
-  if (!futureValue || !years) return 0;
+const presentValue = (futureValue: number | undefined, inflationRate: number, years: number): number => {
+  if (futureValue === undefined || futureValue === null || isNaN(futureValue) || !years) return 0;
   return futureValue / Math.pow(1 + inflationRate, years);
 };
 

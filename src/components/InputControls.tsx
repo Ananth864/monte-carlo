@@ -39,11 +39,18 @@ export const InputControls: React.FC<InputControlsProps> = ({
 
   return (
     <div className="space-y-8 p-4 sm:p-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
-      <div>
-        <h2 className="text-lg font-semibold tracking-tight mb-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold tracking-tight">
           Parameters
         </h2>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50 rounded-full">
+          <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+          <span className="text-[10px] sm:text-xs font-bold text-indigo-700 dark:text-indigo-300">
+            {params.sims.toLocaleString()} <span className="font-medium opacity-70">sims</span>
+          </span>
+        </div>
       </div>
+
 
       {/* SECTION 1: CORPUS & SPENDING */}
       <section className="space-y-4">
